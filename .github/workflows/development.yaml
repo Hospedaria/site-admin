@@ -72,7 +72,7 @@ jobs:
         run: aws s3 rm s3://dev-claudinei-admin-site --recursive
 
       - name: Sincronizar site
-        run: aws s3 cp wwwroot s3://dev-claudinei-admin-site --recursive
+        run: aws s3 cp publish/wwwroot s3://dev-claudinei-admin-site --recursive
 
       - name: Buscando ID da distribuição do cloudfront
         run: |
