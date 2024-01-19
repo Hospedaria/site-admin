@@ -1,0 +1,6 @@
+{
+  "Parameters": {
+    "Environment": "dev",
+    "BucketName": "claudinei-admin-site"
+  }
+}

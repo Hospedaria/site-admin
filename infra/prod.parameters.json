@@ -1,0 +1,9 @@
+{
+  "Parameters": {
+    "Environment": "prod",
+    "BucketName": "claudinei-admin-site",
+    "MinTTL": "3600",
+    "MaxTTL": "86400",
+    "DefaultTTL": "7200"
+  }
+}

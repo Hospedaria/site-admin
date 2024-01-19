@@ -10,20 +10,20 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Restore dependencies
-        run: npm install
+        run: dotnet restore
 
       - name: Build project
-        run: npm run build-hom
+        run: dotnet publish -o publish
 
       - name: Zip Deps
         run: |
-          zip -r dist.zip dist
+          zip -r publish.zip publish/wwwroot
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: project-dist
-          path: dist.zip
+          name: project-publish
+          path: publish.zip
 
   Deploy-infra:
     runs-on: ubuntu-latest
@@ -40,7 +40,7 @@ jobs:
 
       - name: Deploy Template
         run: |
-          aws cloudformation deploy --template-file deploy.yaml --stack-name dev-escoladesoftware-site --capabilities CAPABILITY_NAMED_IAM --parameter-overrides  file://infra/dev.parameters.json
+          aws cloudformation deploy --template-file deploy.yaml --stack-name dev-claudinei-admin-site --capabilities CAPABILITY_NAMED_IAM --parameter-overrides  file://infra/dev.parameters.json
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -52,14 +52,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Download project dist
+      - name: Download project publish
         uses: actions/download-artifact@v3
         with:
-          name: project-dist
+          name: project-publish
 
-      - name: Unzip dist
+      - name: Unzip publish
         run: |
-          unzip dist.zip
+          unzip publish.zip
 
       - name: Configurar ambiente AWS
         uses: aws-actions/configure-aws-credentials@v1
@@ -69,14 +69,14 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Limpando dados do bucket
-        run: aws s3 rm s3://dev-escoladesoftware-site --recursive
+        run: aws s3 rm s3://dev-claudinei-admin-site --recursive
 
       - name: Sincronizar site
-        run: aws s3 cp dist s3://dev-escoladesoftware-site --recursive
+        run: aws s3 cp wwwroot s3://dev-claudinei-admin-site --recursive
 
       - name: Buscando ID da distribuição do cloudfront
         run: |
-          DISTRIBUTION_DESCRIPTION="Cloudfront para site da escola de software - dev"
+          DISTRIBUTION_DESCRIPTION="Cloudfront para site da claudinei admin - dev"
           DISTRIBUTION_ID=$(aws cloudfront list-distributions --query "DistributionList.Items[?Comment=='$DISTRIBUTION_DESCRIPTION'].Id" --output text)
           echo "::set-output name=distribution-id::$DISTRIBUTION_ID"
           echo "DISTRIBUTION_ID_DIST=$DISTRIBUTION_ID" >> $GITHUB_ENV 
