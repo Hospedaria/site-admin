@@ -1,0 +1,137 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Claudinei - Reservas - Admin - Site
+Parameters:
+  MinTTL:
+    Description: Min TTL
+    Type: String
+    Default: "0"
+  MaxTTL:
+    Description: Max TTL
+    Type: String
+    Default: "0"
+  DefaultTTL:
+    Description: Default TTL
+    Type: String
+    Default: "0"
+  BucketName:
+    Description: S3 Bucket Name
+    Type: String
+  Environment:
+    Description: Environment
+    Type: String
+  CachePolicy:
+    Description: Politica de cache
+    Type: String
+    Default: CachingOptimized
+    AllowedValues:
+      - CachingOptimized
+      - CachingDisabled
+      - CachingOptimizedForUncompressedObjects
+      - Elemental-MediaPackage
+      - Amplify
+
+Mappings:
+  CachePolicyIds:
+    CachingOptimized:
+      Id: 658327ea-f89d-4fab-a63d-7e88639e58f6
+    CachingDisabled:
+      Id: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+    CachingOptimizedForUncompressedObjects:
+      Id: b2884449-e4de-46a7-ac36-70bc7f1ddd6d
+    Elemental-MediaPackage:
+      Id: 08627262-05a9-4f76-9ded-b50ca2e3a84f
+    Amplify:
+      Id: 2e54312d-136d-493c-8eb9-b001f22f67d2
+
+Resources:
+  
+  SiteCloudFrontOAC:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Description: !Sub "OAC para ${Environment}-${BucketName}.s3.${AWS::Region}.amazonaws.com"
+        Name: !Sub "${Environment}-${BucketName}.s3.${AWS::Region}.amazonaws.com"
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  SiteCloudFront:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Comment: !Sub "Cloudfront para site do claudinei - reservas - admin - ${Environment}"
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          CachedMethods:
+            - GET
+            - HEAD
+          TargetOriginId:
+            Fn::Sub:
+              "${Environment}-${BucketName}.s3.${AWS::Region}.amazonaws.com"
+          ViewerProtocolPolicy: "redirect-to-https"
+          MaxTTL: !Ref MaxTTL
+          MinTTL: !Ref MinTTL
+          DefaultTTL: !Ref DefaultTTL
+          Compress: true
+          CachePolicyId: !FindInMap [ CachePolicyIds, !Ref CachePolicy , Id ]
+        DefaultRootObject: "index.html"
+        Enabled: true
+        HttpVersion: http2
+        IPV6Enabled: false
+        CustomErrorResponses:
+          - ErrorCachingMinTTL: !Ref MinTTL
+            ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: "/"
+        Origins:
+          - DomainName:
+              Fn::Sub:
+                "${Environment}-${BucketName}.s3.${AWS::Region}.amazonaws.com"
+            Id:
+              Fn::Sub:
+                "${Environment}-${BucketName}.s3.${AWS::Region}.amazonaws.com"
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+            OriginAccessControlId: !GetAtt SiteCloudFrontOAC.Id
+        PriceClass: PriceClass_All
+        Restrictions:
+          GeoRestriction:
+            Locations:
+              - BR
+            RestrictionType: whitelist
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
+
+  SiteContentBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join ["-", [!Ref Environment, !Ref BucketName]]
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  SiteContentBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref SiteContentBucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:s3:::${Environment}-${BucketName}
+              - !Sub arn:aws:s3:::${Environment}-${BucketName}/*
+            Principal:
+              Service:
+                - "cloudfront.amazonaws.com"
+            Condition:
+              StringEquals:
+                'AWS:SourceArn': !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${SiteCloudFront}"

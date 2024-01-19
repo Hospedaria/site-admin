@@ -1,0 +1,87 @@
+name: Deploy Site on S3 - Development
+on:
+  push:
+    branches: [development]
+
+jobs:
+  Build-project:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Restore dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build-hom
+
+      - name: Zip Deps
+        run: |
+          zip -r dist.zip dist
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: project-dist
+          path: dist.zip
+
+  Deploy-infra:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Package Template
+        run: |
+          sam package --s3-bucket ${{ secrets.AWS_BUCKET_DEPLOY }} --template-file template.yaml --output-template-file deploy.yaml
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy Template
+        run: |
+          aws cloudformation deploy --template-file deploy.yaml --stack-name dev-escoladesoftware-site --capabilities CAPABILITY_NAMED_IAM --parameter-overrides  file://infra/dev.parameters.json
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+
+  Deploy-site:
+    runs-on: ubuntu-latest
+    needs: [Deploy-infra, Build-project]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download project dist
+        uses: actions/download-artifact@v3
+        with:
+          name: project-dist
+
+      - name: Unzip dist
+        run: |
+          unzip dist.zip
+
+      - name: Configurar ambiente AWS
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Limpando dados do bucket
+        run: aws s3 rm s3://dev-escoladesoftware-site --recursive
+
+      - name: Sincronizar site
+        run: aws s3 cp dist s3://dev-escoladesoftware-site --recursive
+
+      - name: Buscando ID da distribuição do cloudfront
+        run: |
+          DISTRIBUTION_DESCRIPTION="Cloudfront para site da escola de software - dev"
+          DISTRIBUTION_ID=$(aws cloudfront list-distributions --query "DistributionList.Items[?Comment=='$DISTRIBUTION_DESCRIPTION'].Id" --output text)
+          echo "::set-output name=distribution-id::$DISTRIBUTION_ID"
+          echo "DISTRIBUTION_ID_DIST=$DISTRIBUTION_ID" >> $GITHUB_ENV 
+
+      - name: Invalidando distribuição anterior
+        if: ${{ env.DISTRIBUTION_ID_DIST != ''}}
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ env.DISTRIBUTION_ID_DIST }} --paths "/*"
