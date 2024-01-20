@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: Claudinei - Reservas - Admin - Site
+Description: hospedaria - admin - site
 Parameters:
   MinTTL:
     Description: Min TTL
@@ -60,7 +60,7 @@ Resources:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
-        Comment: !Sub "Cloudfront para site do claudinei - reservas - admin - ${Environment}"
+        Comment: !Sub "Cloudfront para site da hospedaria - admin - ${Environment}"
         DefaultCacheBehavior:
           AllowedMethods:
             - GET

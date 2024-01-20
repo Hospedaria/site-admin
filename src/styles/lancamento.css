@@ -1,0 +1,27 @@
+@media screen and (min-width: 768px) {
+    img.imagem-principal-lancamento {
+        height: 268.95;
+        width: 478;
+    }
+}
+
+@media screen and (max-width: 425px) {
+    img.imagem-principal-lancamento {
+        width: 327;
+        height: 183;
+    }
+}
+
+@media screen and (max-width: 375px) {
+    img.imagem-principal-lancamento {
+        width: 277;
+        height: 155.85;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    img.imagem-principal-lancamento {
+        width: 222;
+        height: 124.9;
+    }
+}

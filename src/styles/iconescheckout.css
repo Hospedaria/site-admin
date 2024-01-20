@@ -1,0 +1,27 @@
+@media screen and (min-width: 1024px) {
+    img.img-checkout {
+        width: 150px;
+        height: 190px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    img.img-checkout {
+        width: 130px;
+        height: 170px;
+    }
+}
+
+@media screen and (max-width: 425px) {
+    img.img-checkout {
+        width: 120px;
+        height: 160px;
+    }
+}
+
+@media screen and (max-width: 375px) {
+    img.img-checkout {
+        width: 115px;
+        height: 155px;
+    }
+}
