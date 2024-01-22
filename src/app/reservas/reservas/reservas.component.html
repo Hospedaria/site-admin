@@ -1,7 +1,7 @@
 <h1 class="mt-2 fs-2">Controle de reservas</h1>
 <div class="d-flex flex-wrap justify-content-between">
     @for(reserva of reservas; track reserva){
-        <mat-card class="col-12 col-md-5 col-lg-4 mb-3">
+        <mat-card (click)="editarReserva(reserva.id)" class="col-12 col-md-5 col-lg-4 mb-3">
             <mat-card-header>
               <mat-card-title>{{reserva.nome}}</mat-card-title>
               <mat-card-subtitle>{{reserva.qtdAdultos}} adultos</mat-card-subtitle>
