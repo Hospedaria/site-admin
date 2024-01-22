@@ -5,6 +5,7 @@ import { MatIcon } from '@angular/material/icon';
 
 import { IReserva } from '../../../models/interfaces/IReserva';
 import { CurrencyPipe, DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reservas',
@@ -18,7 +19,9 @@ export class ReservasComponent implements OnInit {
 
   public reservas: IReserva[] = [];
 
-  constructor(private datePipe: DatePipe, private currencyPipe: CurrencyPipe){}
+  constructor(private datePipe: DatePipe,
+    private currencyPipe: CurrencyPipe,
+    private router: Router){}
 
   public buscaValorReservaFormatoTela(valor: number) : string | null{
     return this.currencyPipe.transform(valor, 'BRL');
@@ -56,5 +59,9 @@ export class ReservasComponent implements OnInit {
           valor: 300,
           suites: []
         });
+  }
+
+  editarReserva(id: number) : void {
+    this.router.navigate([`reservas/editar/${id}`]);
   }
 }
