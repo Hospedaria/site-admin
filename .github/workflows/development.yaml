@@ -17,7 +17,7 @@ jobs:
 
       - name: Zip Deps
         run: |
-          zip -r dist.zip dist
+          zip -r dist.zip dist/hospedaria/browser
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v3
@@ -72,14 +72,14 @@ jobs:
         run: aws s3 rm s3://dev-claudinei-admin-site --recursive
 
       - name: Sincronizar site
-        run: aws s3 cp dist s3://dev-claudinei-admin-site --recursive
+        run: aws s3 cp dist/hospedaria/browser s3://dev-claudinei-admin-site --recursive
 
       - name: Buscando ID da distribuição do cloudfront
         run: |
           DISTRIBUTION_DESCRIPTION="Cloudfront para site da hospedaria - admin - dev"
           DISTRIBUTION_ID=$(aws cloudfront list-distributions --query "DistributionList.Items[?Comment=='$DISTRIBUTION_DESCRIPTION'].Id" --output text)
           echo "::set-output name=distribution-id::$DISTRIBUTION_ID"
-          echo "DISTRIBUTION_ID_DIST=$DISTRIBUTION_ID" >> $GITHUB_ENV 
+          echo "DISTRIBUTION_ID_DIST=$DISTRIBUTION_ID" >> $GITHUB_ENV
 
       - name: Invalidando distribuição anterior
         if: ${{ env.DISTRIBUTION_ID_DIST != ''}}

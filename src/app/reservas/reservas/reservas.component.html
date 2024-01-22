@@ -1,21 +1,55 @@
-<div class="d-flex flex-wrap justify-content-around">
+<h1 class="mt-2 fs-2">Controle de reservas</h1>
+<div class="d-flex flex-wrap justify-content-between">
     @for(reserva of reservas; track reserva){
-        <mat-card>
+        <mat-card class="col-12 col-md-5 col-lg-4 mb-3">
             <mat-card-header>
               <mat-card-title>{{reserva.nome}}</mat-card-title>
               <mat-card-subtitle>{{reserva.qtdAdultos}} adultos</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
-              <div class="d-flex justify-content-around">
-                <div><span>check-in</span></div>
-                <div><span>checkout</span> </div>
+              <div class="d-flex justify-content-between mt-4 mb-3">
+                <div class="d-flex flex-column">
+                  <span class="fw-bold text-uppercase">check-in</span>
+                  <div class="d-flex align-items-center mb-1 pb-1">
+                    <mat-icon>calendar_today</mat-icon>
+                    &nbsp;
+                    <p class="m-0 mt-1">
+                      {{buscaDataFormatoTela(reserva.checkin) }}
+                    </p>
+                  </div>
+                </div>
+                <div class="d-flex flex-column col-6">
+                  <span class="fw-bold text-uppercase">checkout</span>
+                  <div class="d-flex align-items-center mb-1 pb-1">
+                    <mat-icon>calendar_today</mat-icon>
+                    &nbsp;
+                    <p class="m-0 mt-1">
+                      {{buscaDataFormatoTela(reserva.checkout) }}
+                    </p>
+                  </div>                </div>
               </div>
-              <div class="d-flex justify-content-around">
-                <div><span>chegará às</span></div>
-                <div><span>status</span> </div>
+              <div class="d-flex justify-content-between mb-3">
+                <div>
+                  <span class="fw-bold text-uppercase">chegará às</span>
+                  <div class="d-flex align-items-center mb-1 pb-1">
+                    <mat-icon>access_time</mat-icon>
+                    &nbsp;
+                    <p class="m-0 mt-1">
+                      {{reserva.chegada}}
+                    </p>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <span class="fw-bold text-uppercase">status</span>
+                  <p>{{reserva.status}}</p>
+                </div>
               </div>
-              {{reserva.valor}}
+              <p class=" mt-3 mb-2 fw-bold text-success text-uppercase fs-3">
+                {{buscaValorReservaFormatoTela(reserva.valor)}}
+              </p>
             </mat-card-content>
           </mat-card>
+    } @empty {
+      <p>Não há reservas para os filtros informados!</p>
     }
 </div>

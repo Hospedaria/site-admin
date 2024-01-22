@@ -1,1 +1,205 @@
-<p>cadastro-reservas works!</p>
+<h1>Cadastro de reservas</h1>
+
+<div class="row d-flex">
+  <div class="col-12">
+      <form [formGroup]="formCadastro">
+          <div class="row">
+
+              <div class="col-12 form-outline mb-2">
+                <mat-form-field class="w-100" appearance="outline">
+                  <mat-label>Nome</mat-label>
+                  <input
+                    required
+                    matInput
+                    placeholder="Claudinei"
+                    formControlName="nome"
+                    [(ngModel)]="reserva.nome"
+                    >
+
+                  @if (formCadastro.get('nome')?.errors?.['required']) {
+                    <mat-error>
+                      Nome é obrigatório
+                    </mat-error>
+                  }
+                  @else if (formCadastro.get('nome')?.errors?.['minlength']
+                    && reserva.nome.length > 0){
+                    <mat-error>
+                      Nome deve ter no mínimo 2 caracteres
+                    </mat-error>
+                  }
+                  @else if(formCadastro.get('nome')?.errors?.['maxlength']){
+                    <mat-error>
+                      Nome deve ter no máximo 200 caracteres
+                    </mat-error>
+                  }
+                </mat-form-field>
+              </div>
+              <div class="col-12 form-outline mb-2">
+                <div class="row">
+                  <div class="col-6">
+                    <mat-form-field class="w-100" appearance="outline">
+                      <mat-label>Checkin</mat-label>
+                      <input matInput [matDatepicker]="picker">
+                      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                      <mat-datepicker #picker></mat-datepicker>
+
+                      @if (formCadastro.get('checkin')?.errors?.['required']) {
+                        <mat-error>
+                          Checkin é obrigatório
+                        </mat-error>
+                      }
+                    </mat-form-field>
+                  </div>
+                  <div class="col-6">
+                    <mat-form-field class="w-100" appearance="outline">
+                      <mat-label>Checkout</mat-label>
+                      <input matInput [matDatepicker]="picker2">
+                      <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+                      <mat-datepicker #picker2></mat-datepicker>
+
+                      @if (formCadastro.get('checkout')?.errors?.['required']) {
+                        <mat-error>
+                          Checkout é obrigatório
+                        </mat-error>
+                      }
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 form-outline mb-2">
+                <mat-form-field class="w-100" appearance="outline">
+                  <mat-label>Chegará às</mat-label>
+                  <input
+                    required
+                    matInput
+                    type="time"
+                    formControlName="chegada"
+                    [(ngModel)]="reserva.chegada"
+                    >
+
+                  @if (formCadastro.get('chegada')?.errors?.['required']) {
+                    <mat-error>
+                      Chegarà às é obrigatório
+                    </mat-error>
+                  }
+                </mat-form-field>
+              </div>
+              <div class="col-12 form-outline mb-2">
+                <mat-form-field class="w-100" appearance="outline">
+                  <mat-label>Valor da reserva</mat-label>
+                  <input
+                    required
+                    matInput
+                    type="number"
+                    formControlName="valor"
+                    [(ngModel)]="reserva.valor"
+                    >
+
+                  @if (formCadastro.get('valor')?.errors?.['required']) {
+                    <mat-error>
+                      Valor da reserva é obrigatório
+                    </mat-error>
+                  }
+                </mat-form-field>
+              </div>
+              <div class="col-12 form-outline mb-2">
+                <div class="row">
+                  <div class="col-6">
+                    <mat-form-field class="w-100" appearance="outline">
+                      <mat-label>Adultos</mat-label>
+                      <input
+                        required
+                        matInput
+                        type="number"
+                        min="0"
+                        placeholder="0"
+                        formControlName="adultos"
+                        [(ngModel)]="reserva.qtdAdultos"
+                        >
+
+                      @if (formCadastro.get('adultos')?.errors?.['required']) {
+                        <mat-error>
+                          Quantidade de adultos é obrigatório
+                        </mat-error>
+                      }
+                    </mat-form-field></div>
+                  <div class="col-6">
+                    <mat-form-field class="w-100" appearance="outline">
+                      <mat-label>Crianças</mat-label>
+                      <input
+                        required
+                        matInput
+                        type="number"
+                        min="0"
+                        placeholder="0"
+                        formControlName="criancas"
+                        [(ngModel)]="reserva.qtdCriancas"
+                        >
+
+                      @if (formCadastro.get('criancas')?.errors?.['required']) {
+                        <mat-error>
+                          Quantidade de crianças é obrigatório
+                        </mat-error>
+                      }
+                    </mat-form-field></div>
+                </div>
+              </div>
+              <div class="col-12 form-outline mb-2">
+                <mat-form-field class="w-100" appearance="outline">
+                  <mat-label>status</mat-label>
+                  <mat-select
+                    formControlName="status"
+                    [(ngModel)]="reserva.status">
+
+                    @for (item of statusReservaMap; track item) {
+                      <mat-option value="{{item.key}}">{{item.value}}</mat-option>
+                    }
+                  </mat-select>
+
+                  @if (formCadastro.get('status')?.errors?.['required']) {
+                    <mat-error>
+                      Status da reserva é obrigatório
+                    </mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="col-12 form-outline mb-2">
+                <mat-form-field class="w-100" appearance="outline">
+                  <mat-label>Observações</mat-label>
+                  <textarea
+                    required
+                    matInput
+                    placeholder="Digite suas observações"
+                    formControlName="observacoes"
+                    [(ngModel)]="reserva.observacoes"
+                    ></textarea>
+
+                  @if(formCadastro.get('observacoes')?.errors?.['maxlength']){
+                    <mat-error>
+                      Observações deve ter no máximo 255 caracteres
+                    </mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="col-12 form-outline mb-2">
+                <p>Suites:</p>
+                <section>
+                  @for (suite of suitesMap; track suite) {
+                    <mat-checkbox (change)="onSelecionarSuite($event, suite.value)" >{{suite.value}}</mat-checkbox>
+                  }
+                  </section>
+                  @if (reserva.suites.length == 0 &&
+                    checkBoxSujo) {
+                    <mat-error>
+                      Ao menos uma suite deve ser selecionada
+                    </mat-error>
+                  }
+              </div>
+          </div>
+
+          <button class="w-100" mat-raised-button color="primary" type="button">Cadastrar</button>
+      </form>
+  </div>
+</div>
