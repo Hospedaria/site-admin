@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
+import {MatChipsModule} from '@angular/material/chips';
+
 
 import { IReserva } from '../../../models/interfaces/IReserva';
 import { CurrencyPipe, DatePipe } from '@angular/common';
@@ -10,7 +12,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-reservas',
   standalone: true,
-  imports: [MatCardModule, MatIcon],
+  imports: [MatCardModule, MatIcon, MatChipsModule],
   templateUrl: './reservas.component.html',
   styleUrl: './reservas.component.css',
   providers: [DatePipe, CurrencyPipe]
@@ -43,7 +45,7 @@ export class ReservasComponent implements OnInit {
         qtdCriancas: 0,
         status: 'Confirmado',
         valor: 300,
-        suites: []
+        suites: ['Chalé', 'Azul']
       });
 
       this.reservas.push(
@@ -57,11 +59,22 @@ export class ReservasComponent implements OnInit {
           qtdCriancas: 0,
           status: 'Confirmado',
           valor: 300,
-          suites: []
+          suites: ['Vermelha']
         });
   }
 
   editarReserva(id: number) : void {
     this.router.navigate([`reservas/editar/${id}`]);
+  }
+
+  corChipDoChale(suite: string): string {
+    switch(suite){
+      case 'Amarela': return 'warning';
+      case 'Azul': return 'primary';
+      case 'Verde': return 'success';
+      case 'Vermelha': return 'danger';
+      case 'Chalé': return 'dark';
+    }
+    return '';
   }
 }
