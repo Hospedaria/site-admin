@@ -45,6 +45,7 @@ export class ReservasComponent implements OnInit {
     this.reservas.push(
       {
         id: 1,
+        email: 'pedro@gmail.com',
         nome: 'Pedro Henrique',
         checkin: new Date(),
         checkout: new Date(),
@@ -59,6 +60,7 @@ export class ReservasComponent implements OnInit {
       this.reservas.push(
         {
           id: 2,
+          email: 'pedro@gmail.com',
           nome: 'Pedro Henrique',
           checkin: new Date(),
           checkout: new Date(),
