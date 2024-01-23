@@ -3,32 +3,11 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-
-.p-0{
-  padding: 0;
+.mat-mdc-standard-chip.bg-warning,
+.mat-mdc-standard-chip.bg-success,
+.mat-mdc-standard-chip.bg-danger,
+.mat-mdc-standard-chip.bg-primary,
+.mat-mdc-standard-chip.bg-dark
+{
+  --mdc-chip-label-text-color: #fff;
 }
-
-.pt-0 {
-  padding-top: 0;
-}
-
-.pb-0{
-  padding-bottom: 0;
-}
-
-.spacer {
-    flex: 1 1 auto;
-}
-
-/*
-.d-flex {
-    display: flex !important;
-}
-
-.flex-wrap{
-    flex-wrap: wrap !important;
-}
-
-.justify-content-around{
-    justify-content: space-around !important;
-} */

@@ -3,7 +3,16 @@
     @for(reserva of reservas; track reserva){
         <mat-card (click)="editarReserva(reserva.id)" class="col-12 col-md-5 col-lg-4 mb-3">
             <mat-card-header>
-              <mat-card-title>{{reserva.nome}}</mat-card-title>
+              <mat-card-title>
+                <div class="w-100">
+                  <mat-chip-listbox>
+                    @for (suite of reserva.suites; track suite) {
+                      <mat-chip class="bg-{{corChipDoChale(suite)}}">{{suite}}</mat-chip>
+                    }
+                  </mat-chip-listbox>
+                </div>
+                {{reserva.nome}}
+              </mat-card-title>
               <mat-card-subtitle>{{reserva.qtdAdultos}} adultos</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
