@@ -1,17 +1,15 @@
 <h1 class="mt-2 fs-2">Controle de reservas</h1>
 <div class="d-flex flex-wrap justify-content-between">
     @for(reserva of reservas; track reserva){
-        <mat-card (click)="editarReserva(reserva.id)" class="col-12 col-md-5 col-lg-4 mb-3">
+        <mat-card  class="col-12 col-md-5 col-lg-4 mb-3">
             <mat-card-header>
               <mat-card-title>
-                <div class="w-100">
                   <mat-chip-listbox>
                     @for (suite of reserva.suites; track suite) {
                       <mat-chip class="bg-{{corChipDoChale(suite)}}">{{suite}}</mat-chip>
                     }
                   </mat-chip-listbox>
-                </div>
-                {{reserva.nome}}
+                  {{reserva.nome}}
               </mat-card-title>
               <mat-card-subtitle>{{reserva.qtdAdultos}} adultos</mat-card-subtitle>
             </mat-card-header>
@@ -53,9 +51,19 @@
                   <p>{{reserva.status}}</p>
                 </div>
               </div>
+              <div class="d-flex justify-content-between align-items-center">
               <p class=" mt-3 mb-2 fw-bold text-success text-uppercase fs-3">
                 {{buscaValorReservaFormatoTela(reserva.valor)}}
               </p>
+              <div>
+                <button (click)="abrirExcluirReserva(reserva.id)" mat-mini-fab color="warn m-2 mb-0 mt-0 p-0" aria-label="Deletar">
+                  <mat-icon>delete</mat-icon>
+                </button>
+                <button (click)="editarReserva(reserva.id)" type="button" mat-mini-fab color="ligth" aria-label="editar">
+                  <mat-icon>edit</mat-icon>
+                </button>
+               </div>
+              </div>
             </mat-card-content>
           </mat-card>
     } @empty {
