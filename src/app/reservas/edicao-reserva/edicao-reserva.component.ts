@@ -33,6 +33,7 @@ export class EdicaoReservaComponent {
   formCadastro: FormGroup = new FormGroup({});
   reserva: IReserva = {
     id: 1,
+    email: 'pedro@gmail.com',
     nome: 'Pedro Henrique',
     checkin: new Date(),
     checkout: new Date(),
@@ -48,6 +49,9 @@ export class EdicaoReservaComponent {
     this.formCadastro = formBuilder.group({
       'nome': new FormControl(this.reserva.nome, [
         Validators.required, Validators.maxLength(200), Validators.minLength(2)
+      ]),
+      'email': new FormControl(this.reserva.nome, [
+        Validators.required, Validators.maxLength(200), Validators.email
       ]),
       'checkin': new FormControl(this.reserva.checkin, Validators.required),
       'checkout': new FormControl(this.reserva.checkout, Validators.required),

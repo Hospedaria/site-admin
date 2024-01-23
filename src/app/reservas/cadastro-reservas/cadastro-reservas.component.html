@@ -35,6 +35,37 @@
                 </mat-form-field>
               </div>
               <div class="col-12 form-outline mb-2">
+                <mat-form-field class="w-100" appearance="outline">
+                  <mat-label>E-mail</mat-label>
+                  <input
+                    required
+                    type="email"
+                    matInput
+                    placeholder="Digite seu e-mail"
+                    formControlName="email"
+                    [(ngModel)]="reserva.email"
+                    >
+
+                  @if (formCadastro.get('email')?.errors?.['required']) {
+                    <mat-error>
+                      Email é obrigatório
+                    </mat-error>
+                  }
+                  @else if(formCadastro.get('email')?.errors?.['maxlength']){
+                    <mat-error>
+                      E-mail deve ter no máximo 200 caracteres
+                    </mat-error>
+                  }
+                  @else if (formCadastro.get('email')?.errors?.['email']
+                    && reserva.email.length > 0){
+                    <mat-error>
+                      E-mail inválido
+                    </mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="col-12 form-outline mb-2">
                 <div class="row">
                   <div class="col-6">
                     <mat-form-field class="w-100" appearance="outline">
