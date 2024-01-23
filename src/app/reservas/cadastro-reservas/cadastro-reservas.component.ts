@@ -36,6 +36,7 @@ export class CadastroReservasComponent {
       id: 0,
       email: '',
       nome: '',
+      telefone: '',
       checkin: new Date(),
       checkout: new Date(),
       chegada: '',
@@ -53,6 +54,9 @@ export class CadastroReservasComponent {
       ]),
       'email': new FormControl(this.reserva.nome, [
         Validators.required, Validators.maxLength(200), Validators.email
+      ]),
+      'telefone': new FormControl(this.reserva.telefone, [
+        Validators.required
       ]),
       'checkin': new FormControl(this.reserva.checkin, Validators.required),
       'checkout': new FormControl(this.reserva.checkout, Validators.required),

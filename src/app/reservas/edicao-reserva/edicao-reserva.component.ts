@@ -35,6 +35,7 @@ export class EdicaoReservaComponent {
     id: 1,
     email: 'pedro@gmail.com',
     nome: 'Pedro Henrique',
+    telefone: '1198161123',
     checkin: new Date(),
     checkout: new Date(),
     chegada: '12:00',
@@ -52,6 +53,9 @@ export class EdicaoReservaComponent {
       ]),
       'email': new FormControl(this.reserva.nome, [
         Validators.required, Validators.maxLength(200), Validators.email
+      ]),
+      'telefone': new FormControl(this.reserva.telefone, [
+        Validators.required
       ]),
       'checkin': new FormControl(this.reserva.checkin, Validators.required),
       'checkout': new FormControl(this.reserva.checkout, Validators.required),
