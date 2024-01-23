@@ -64,7 +64,25 @@
                   }
                 </mat-form-field>
               </div>
+              <div class="col-12 form-outline mb-2">
+                <mat-form-field class="w-100" appearance="outline">
+                  <mat-label>Telefone</mat-label>
+                  <input
+                    required
+                    type="tel"
+                    matInput
+                    placeholder="Digite seu telefone"
+                    formControlName="telefone"
+                    [(ngModel)]="reserva.telefone"
+                    >
 
+                  @if (formCadastro.get('telefone')?.errors?.['required']) {
+                    <mat-error>
+                      Telefone é obrigatório
+                    </mat-error>
+                  }
+                </mat-form-field>
+              </div>
               <div class="col-12 form-outline mb-2">
                 <div class="row">
                   <div class="col-6">

@@ -1,6 +1,7 @@
 export interface IReserva {
     id: number;
     email: string;
+    telefone: string;
     nome: string;
     qtdAdultos: number;
     qtdCriancas: number;
