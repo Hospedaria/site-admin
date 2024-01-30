@@ -5,6 +5,7 @@ import { EdicaoReservaComponent } from './reservas/edicao-reserva/edicao-reserva
 
 
 export const routes: Routes = [
+    { path: '',redirectTo: 'reservas', pathMatch: 'full'},
     { path: 'reservas', component: ReservasComponent},
     { path: 'reservas/cadastro', component: CadastroReservasComponent },
     { path: 'reservas/editar/:id', component: EdicaoReservaComponent }

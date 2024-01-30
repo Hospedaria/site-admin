@@ -12,6 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from './common/SharedModule';
 import { ReservasModule } from './reservas/reservas.module';
+import { FooterComponent } from './footer/footer.component';
 
 registerLocaleData(localePt);
 
@@ -20,6 +21,7 @@ registerLocaleData(localePt);
   standalone: true,
   imports: [RouterOutlet,
     HeaderComponent,
+    FooterComponent,
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
