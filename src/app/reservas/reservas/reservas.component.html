@@ -1,7 +1,7 @@
 <h1 class="mt-4 mb-4 fw-bold fs-1">Controle de reservas</h1>
 <div>
-    <div class="row">
-        <div class="col-11 form-outline mb-2">
+    <div class="row d-flex justify-content-between align-items-center">
+        <div class="mt-2 col-9 col-md-11 form-outline mb-2">
           <mat-form-field class="w-100" appearance="outline">
             <mat-label>Filtre as reservas pela data do check-in:</mat-label>
             <input matInput [(ngModel)]="dataPesquisa" [matDatepicker]="picker">
@@ -9,7 +9,7 @@
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
         </div>
-        <div class="col-1">
+        <div class="col-3 pb-4 col-md-1 text-center">
           <button (click)="pesquisarReservas()" mat-fab color="primary" type="button">
             <mat-icon>search</mat-icon>
           </button>
