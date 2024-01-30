@@ -1,39 +1,38 @@
+import { LoadingService } from './../../services/loading.service';
 import { StatusReservaMap } from './../../../models/enums/StatusReserva';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatSelectModule } from '@angular/material/select';
-import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 import { IReserva } from '../../../models/interfaces/IReserva';
-import { MatNativeDateModule } from '@angular/material/core';
 import { KeyValue } from '@angular/common';
 import { SuitesMap } from '../../../models/enums/Suites';
-import { MatButtonModule } from '@angular/material/button';
+import { ReservaService } from '../../services/reserva.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AlertMessage } from '../../../models/AlertMessage';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-cadastro-reservas',
-  standalone: true,
-  imports: [MatFormFieldModule, MatInputModule,MatDatepickerModule,
-    MatNativeDateModule, MatSelectModule, MatCheckboxModule,
-    MatButtonModule,
-    FormsModule, ReactiveFormsModule],
   templateUrl: './cadastro-reservas.component.html',
   styleUrl: './cadastro-reservas.component.css',
-  providers: []
+  providers: [ReservaService]
 })
-export class CadastroReservasComponent {
+export class CadastroReservasComponent implements OnInit {
 
   statusReservaMap: KeyValue<number, string>[] = StatusReservaMap;
   suitesMap: KeyValue<number, string>[] = SuitesMap;
   checkBoxSujo: boolean = false;
+  mensagensAlerta: AlertMessage = {
+    erro: true,
+    mensagens: []
+  };
+  mensagemRetorno: string | undefined;
+
 
   formCadastro: FormGroup = new FormGroup({});
   reserva: IReserva = {
-      id: 0,
       email: '',
       nome: '',
       telefone: '',
@@ -42,12 +41,16 @@ export class CadastroReservasComponent {
       chegada: '',
       qtdAdultos: 0,
       qtdCriancas: 0,
-      status: '0',
+      status: 0,
       valor: 0,
       suites: []
   };
 
-  constructor(formBuilder: FormBuilder){
+  constructor(formBuilder: FormBuilder,
+    private reservaService: ReservaService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private loadingService: LoadingService){
     this.formCadastro = formBuilder.group({
       'nome': new FormControl(this.reserva.nome, [
         Validators.required, Validators.maxLength(200), Validators.minLength(2)
@@ -79,18 +82,82 @@ export class CadastroReservasComponent {
     });
   }
 
-  onSelecionarSuite(event: MatCheckboxChange, suite: string) : void {
+  ngOnInit(): void {
+    this.activatedRoute
+      .queryParams
+      .subscribe((params)=> {
+        this.mensagemRetorno = params['mensagem'];
+        if (this.mensagemRetorno){
+          this.mensagensAlerta = {
+            erro: false,
+            mensagens: [this.mensagemRetorno]
+          }
+        }
+      });
+  }
 
-    let index = this.reserva.suites.lastIndexOf(suite);
+  onSelecionarSuite(event: MatCheckboxChange, suiteId: number) : void {
+
+    let index = this.reserva.suites.lastIndexOf(suiteId);
     let itemExiste = index > -1;
     if (event.checked && !itemExiste){
-        this.reserva.suites.push(suite);
+        this.reserva.suites.push(suiteId);
     }
     else if (itemExiste){
         this.reserva.suites.splice(index, 1);
     }
     this.checkBoxSujo = true;
+  }
 
-    console.log(this.reserva);
+  onCadastrarReserva(){
+    if (this.formCadastro.valid){
+      this.mensagensAlerta = {
+        erro: false,
+        mensagens: []
+      };
+
+      this.loadingService.show();
+      this.reservaService.criarReserva(this.reserva)
+        .subscribe({
+          next: () => {
+            this.router.navigate(['reservas/cadastro'], {
+              queryParams: {
+                mensagem: 'Reserva cadastrada com sucesso'
+              }
+            });
+          },
+          error: (e: HttpErrorResponse) => {
+            let errors = e.error.errors;
+            let errorsString: string[] = [];
+            for (const prop in errors){
+              if (errors.hasOwnProperty(prop)) {
+                let arrayConteudo = errors[prop];
+                if (arrayConteudo){
+                  for (const item of arrayConteudo) {
+                    errorsString.push(item);
+                  }
+                }
+            }
+            }
+
+            this.mensagensAlerta = {
+              erro: true,
+              mensagens: errorsString
+            }
+          }
+      })
+      .add(() => {
+        window.scroll({
+          top:0,
+          behavior: 'smooth'
+        });
+        this.loadingService.hide();
+      });
+
+
+    }
+    else {
+      this.formCadastro.markAllAsTouched();
+    }
   }
 }

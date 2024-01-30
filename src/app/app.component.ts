@@ -9,6 +9,9 @@ import localePt from '@angular/common/locales/pt';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { SharedModule } from './common/SharedModule';
+import { ReservasModule } from './reservas/reservas.module';
 
 registerLocaleData(localePt);
 
@@ -19,15 +22,17 @@ registerLocaleData(localePt);
     HeaderComponent,
     CommonModule,
     ReactiveFormsModule,
-    FormsModule ],
+    FormsModule,
+    HttpClientModule,
+    ReservasModule,
+    SharedModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
   providers: [
     {
       provide: LOCALE_ID,
       useValue: 'pt-BR'
-    }
-  ]
+    }]
 })
 export class AppComponent {
   title = 'hospedaria';

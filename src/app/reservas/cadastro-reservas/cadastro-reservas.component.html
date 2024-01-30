@@ -1,10 +1,11 @@
-<h1>Cadastro de reservas</h1>
+<app-alert [mensagensAlerta]="mensagensAlerta"></app-alert>
+
+<h1 class="mt-4 mb-4 fw-bold fs-1">Cadastro de reservas</h1>
 
 <div class="row d-flex">
   <div class="col-12">
       <form [formGroup]="formCadastro">
           <div class="row">
-
               <div class="col-12 form-outline mb-2">
                 <mat-form-field class="w-100" appearance="outline">
                   <mat-label>Nome</mat-label>
@@ -149,6 +150,11 @@
                       Valor da reserva é obrigatório
                     </mat-error>
                   }
+                  @else if (formCadastro.get('valor')?.errors?.['min']){
+                    <mat-error>
+                      Valor da reserva não pode ser 0 reais
+                    </mat-error>
+                  }
                 </mat-form-field>
               </div>
               <div class="col-12 form-outline mb-2">
@@ -169,6 +175,10 @@
                       @if (formCadastro.get('adultos')?.errors?.['required']) {
                         <mat-error>
                           Quantidade de adultos é obrigatório
+                        </mat-error>
+                      } @else if (formCadastro.get('adultos')?.errors?.['min']){
+                        <mat-error>
+                          Deve-se ter ao menos 1 adulto na reserva
                         </mat-error>
                       }
                     </mat-form-field></div>
@@ -201,7 +211,7 @@
                     [(ngModel)]="reserva.status">
 
                     @for (item of statusReservaMap; track item) {
-                      <mat-option value="{{item.key}}">{{item.value}}</mat-option>
+                      <mat-option [value]="item.key">{{item.value}}</mat-option>
                     }
                   </mat-select>
 
@@ -217,14 +227,14 @@
                 <mat-form-field class="w-100" appearance="outline">
                   <mat-label>Observações</mat-label>
                   <textarea
-                    required
                     matInput
                     placeholder="Digite suas observações"
                     formControlName="observacoes"
                     [(ngModel)]="reserva.observacoes"
                     ></textarea>
 
-                  @if(formCadastro.get('observacoes')?.errors?.['maxlength']){
+                  @if(formCadastro.get('observacoes')?.errors?.['maxlength'] &&
+                    reserva.observacoes && reserva.observacoes.length > 255){
                     <mat-error>
                       Observações deve ter no máximo 255 caracteres
                     </mat-error>
@@ -236,7 +246,7 @@
                 <p>Suites:</p>
                 <section>
                   @for (suite of suitesMap; track suite) {
-                    <mat-checkbox (change)="onSelecionarSuite($event, suite.value)" >{{suite.value}}</mat-checkbox>
+                    <mat-checkbox (change)="onSelecionarSuite($event, suite.key)" >{{suite.value}}</mat-checkbox>
                   }
                   </section>
                   @if (reserva.suites.length == 0 &&
@@ -248,7 +258,7 @@
               </div>
           </div>
 
-          <button class="w-100" mat-raised-button color="primary" type="button">Cadastrar</button>
+          <button (click)="onCadastrarReserva()" class="w-100" mat-raised-button color="primary" type="button">Cadastrar</button>
       </form>
   </div>
 </div>

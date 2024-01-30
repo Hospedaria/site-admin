@@ -1,0 +1,6 @@
+<!-- loading-screen.component.html -->
+<div *ngIf="loadingService.isLoading$ | async" class="loading-background">
+  <div class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>

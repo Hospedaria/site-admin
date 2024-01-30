@@ -1,11 +1,11 @@
 import { KeyValue } from "@angular/common";
 
 export enum Suite {
-  Amarela,
-  Vermelha,
-  Azul,
-  Verde,
-  Chale
+  Amarela = 1,
+  Vermelha = 2,
+  Azul = 3,
+  Verde = 4,
+  Chale = 5
 }
 
 export const SuitesMap: KeyValue<number, string>[] = [

@@ -1,52 +1,55 @@
-import { StatusReserva, StatusReservaMap } from './../../../models/enums/StatusReserva';
-import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { StatusReservaMap } from './../../../models/enums/StatusReserva';
+import { Component, OnInit } from '@angular/core';
 
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatSelectModule } from '@angular/material/select';
-import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 import { IReserva } from '../../../models/interfaces/IReserva';
-import { MatNativeDateModule } from '@angular/material/core';
 import { KeyValue } from '@angular/common';
-import { Suite, SuitesMap } from '../../../models/enums/Suites';
-import { MatButtonModule } from '@angular/material/button';
+import { SuitesMap } from '../../../models/enums/Suites';
+import { ReservaService } from '../../services/reserva.service';
+import { LoadingService } from '../../services/loading.service';
+import { AlertMessage } from '../../../models/AlertMessage';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-edicao-reserva',
-  standalone: true,
-  imports: [MatFormFieldModule, MatInputModule,MatDatepickerModule,
-    MatNativeDateModule, MatSelectModule, MatCheckboxModule,
-    MatButtonModule,
-    FormsModule, ReactiveFormsModule],
   templateUrl: './edicao-reserva.component.html',
   styleUrl: './edicao-reserva.component.css'
 })
-export class EdicaoReservaComponent {
+export class EdicaoReservaComponent implements OnInit {
 
   statusReservaMap: KeyValue<number, string>[] = StatusReservaMap;
   suitesMap: KeyValue<number, string>[] = SuitesMap;
   checkBoxSujo: boolean = false;
+  mensagemRetorno: string | undefined;
+  mensagensAlerta: AlertMessage = {
+    erro: true,
+    mensagens: []
+  };
 
   formCadastro: FormGroup = new FormGroup({});
   reserva: IReserva = {
-    id: 1,
-    email: 'pedro@gmail.com',
-    nome: 'Pedro Henrique',
-    telefone: '1198161123',
+    id: '',
+    email: '',
+    nome: '',
+    telefone: '',
     checkin: new Date(),
     checkout: new Date(),
-    chegada: '12:00',
-    qtdAdultos: 2,
+    chegada: '',
+    qtdAdultos: 0,
     qtdCriancas: 0,
-    status: StatusReserva.Confirmado.toString(),
-    valor: 300,
-    suites: ['Amarela']
+    status: 0,
+    valor: 0,
+    suites: []
   };
 
-  constructor(formBuilder: FormBuilder){
+  constructor(formBuilder: FormBuilder,
+    private reservaService: ReservaService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private loadingService: LoadingService){
     this.formCadastro = formBuilder.group({
       'nome': new FormControl(this.reserva.nome, [
         Validators.required, Validators.maxLength(200), Validators.minLength(2)
@@ -78,24 +81,96 @@ export class EdicaoReservaComponent {
     });
   }
 
-  suiteEstaSelecionada(suite: string) : boolean {
-    let index = this.reserva.suites.lastIndexOf(suite);
+  ngOnInit(): void {
+    this.loadingService.show();
+    this.activatedRoute
+      .queryParams
+      .subscribe((params)=> {
+        this.mensagemRetorno = params['mensagem'];
+        if (this.mensagemRetorno){
+          this.mensagensAlerta = {
+            erro: false,
+            mensagens: [this.mensagemRetorno]
+          }
+        }
+      });
+
+    let id = this.activatedRoute.snapshot.params["id"];
+    this.reservaService.obterReserva(
+      id
+    ).subscribe({
+      next: (r)=> this.reserva = r,
+      error: (e) => this.router.navigate(['reservas'])
+    })
+    .add(()=> this.loadingService.hide());
+  }
+
+  suiteEstaSelecionada(suiteId: number) : boolean {
+    let index = this.reserva.suites.lastIndexOf(suiteId);
     return index > -1;
   }
 
-  onSelecionarSuite(event: MatCheckboxChange, suite: string) : void {
+  onSelecionarSuite(event: MatCheckboxChange, suiteId: number) : void {
 
-    let index = this.reserva.suites.lastIndexOf(suite);
+    let index = this.reserva.suites.lastIndexOf(suiteId);
     let itemExiste = index > -1;
     if (event.checked && !itemExiste){
-        this.reserva.suites.push(suite);
+        this.reserva.suites.push(suiteId);
     }
     else if (itemExiste){
         this.reserva.suites.splice(index, 1);
     }
     this.checkBoxSujo = true;
+  }
 
-    console.log(this.reserva);
+  onEditarSuite() {
+    if (this.formCadastro.valid){
+
+      this.loadingService.show();
+      let id: string = this.reserva.id || '';
+      this.reservaService.atualizarReserva(
+        id,
+        this.reserva
+      )
+      .subscribe({
+        next: () => {
+          this.router.navigate([`reservas/editar/${id}`], {
+            queryParams: {
+              mensagem: 'Reserva editada com sucesso'
+            }
+          });
+        },
+        error: (e: HttpErrorResponse)=> {
+          let errors = e.error.errors;
+            let errorsString: string[] = [];
+            for (const prop in errors){
+              if (errors.hasOwnProperty(prop)) {
+                let arrayConteudo = errors[prop];
+                if (arrayConteudo){
+                  for (const item of arrayConteudo) {
+                    errorsString.push(item);
+                  }
+                }
+            }
+            }
+
+            this.mensagensAlerta = {
+              erro: true,
+              mensagens: errorsString
+            }
+        }
+      })
+      .add(() => {
+        window.scroll({
+          top:0,
+          behavior: 'smooth'
+        });
+        this.loadingService.hide()
+      });
+    }
+    else{
+      this.formCadastro.markAsDirty();
+    }
   }
 
 }

@@ -1,8 +1,8 @@
 import { KeyValue } from './../KeyValue';
 export enum StatusReserva {
-  PreReservado = 0,
-  Confirmado = 1,
-  Cancelado = 2
+  PreReservado = 1,
+  Confirmado = 2,
+  Cancelado = 3
 }
 
 export const StatusReservaMap: KeyValue<number, string>[] = [
