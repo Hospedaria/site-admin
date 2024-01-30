@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 
 import { EdicaoReservaComponent } from './edicao-reserva/edicao-reserva.component';
@@ -40,7 +40,11 @@ import { LoadingService } from '../services/loading.service';
     SharedModule,
   ],
   providers: [
-    LoadingService
+    LoadingService,
+    {
+      provide: MAT_DATE_LOCALE,
+      useValue: 'pt-BR'
+    }
   ],
   exports: [
     CadastroReservasComponent

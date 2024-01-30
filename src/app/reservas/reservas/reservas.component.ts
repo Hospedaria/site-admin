@@ -17,6 +17,7 @@ import { ExcluirReservaDialogComponent } from '../excluir-reserva-dialog/excluir
 import { SuitesMap } from '../../../models/enums/Suites';
 import { ReservaService } from '../../services/reserva.service';
 import { LoadingService } from '../../services/loading.service';
+import { StatusReservaMap } from '../../../models/enums/StatusReserva';
 
 @Component({
   selector: 'app-reservas',
@@ -92,6 +93,10 @@ export class ReservasComponent implements OnInit {
     if (!id)
       this.router.navigate(['reservas']);
     this.router.navigate([`reservas/editar/${id}`]);
+  }
+
+  getDescricaoStatus(status: number) : string {
+    return StatusReservaMap.find(c => c.key == status)?.value || '';
   }
 
   getDescricaoChipChale(suiteId: number) : string {
