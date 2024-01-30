@@ -1,5 +1,5 @@
 export interface IReserva {
-    id: number;
+    id?: string;
     email: string;
     telefone: string;
     nome: string;
@@ -7,9 +7,9 @@ export interface IReserva {
     qtdCriancas: number;
     checkin: Date;
     checkout: Date;
-    status: string;
+    status: number;
     valor: number;
     chegada: string;
-    suites: string[];
+    suites: number[];
     observacoes?: string | null;
 }

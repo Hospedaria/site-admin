@@ -1,4 +1,21 @@
-<h1 class="mt-2 fs-2">Controle de reservas</h1>
+<h1 class="mt-4 mb-4 fw-bold fs-1">Controle de reservas</h1>
+<div>
+    <div class="row">
+        <div class="col-11 form-outline mb-2">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Filtre as reservas pela data do check-in:</mat-label>
+            <input matInput [(ngModel)]="dataPesquisa" [matDatepicker]="picker">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-1">
+          <button (click)="pesquisarReservas()" mat-fab color="primary" type="button">
+            <mat-icon>search</mat-icon>
+          </button>
+        </div>
+      </div>
+</div>
 <div class="d-flex flex-wrap justify-content-between">
     @for(reserva of reservas; track reserva){
         <mat-card  class="col-12 col-md-5 col-lg-4 mb-3">
@@ -6,7 +23,7 @@
               <mat-card-title>
                   <mat-chip-listbox>
                     @for (suite of reserva.suites; track suite) {
-                      <mat-chip class="bg-{{corChipDoChale(suite)}}">{{suite}}</mat-chip>
+                      <mat-chip class="bg-{{corChipDoChale(suite)}}">{{getDescricaoChipChale(suite)}}</mat-chip>
                     }
                   </mat-chip-listbox>
                   {{reserva.nome}}

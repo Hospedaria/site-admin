@@ -14,12 +14,12 @@ import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import {MatMenuModule} from '@angular/material/menu';
 import { ExcluirReservaDialogComponent } from '../excluir-reserva-dialog/excluir-reserva-dialog.component';
+import { SuitesMap } from '../../../models/enums/Suites';
+import { ReservaService } from '../../services/reserva.service';
+import { LoadingService } from '../../services/loading.service';
 
 @Component({
   selector: 'app-reservas',
-  standalone: true,
-  imports: [MatCardModule, MatIcon, MatChipsModule, MatButtonModule,
-    MatMenuModule],
   templateUrl: './reservas.component.html',
   styleUrl: './reservas.component.css',
   providers: [DatePipe, CurrencyPipe]
@@ -27,11 +27,14 @@ import { ExcluirReservaDialogComponent } from '../excluir-reserva-dialog/excluir
 export class ReservasComponent implements OnInit {
 
   public reservas: IReserva[] = [];
+  dataPesquisa: Date = new Date();
 
   constructor(private datePipe: DatePipe,
     private currencyPipe: CurrencyPipe,
     private router: Router,
-    public matDialog: MatDialog){}
+    public matDialog: MatDialog,
+    private reservaservice: ReservaService,
+    private loadingService: LoadingService){}
 
   public buscaValorReservaFormatoTela(valor: number) : string | null{
     return this.currencyPipe.transform(valor, 'BRL');
@@ -42,40 +45,26 @@ export class ReservasComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.reservas.push(
-      {
-        id: 1,
-        email: 'pedro@gmail.com',
-        nome: 'Pedro Henrique',
-        telefone: '',
-        checkin: new Date(),
-        checkout: new Date(),
-        chegada: '12:00',
-        qtdAdultos: 2,
-        qtdCriancas: 0,
-        status: 'Confirmado',
-        valor: 300,
-        suites: ['Chalé', 'Azul']
-      });
-
-      this.reservas.push(
-        {
-          id: 2,
-          email: 'pedro@gmail.com',
-          nome: 'Pedro Henrique',
-          telefone: '',
-          checkin: new Date(),
-          checkout: new Date(),
-          chegada: '12:00',
-          qtdAdultos: 2,
-          qtdCriancas: 0,
-          status: 'Confirmado',
-          valor: 300,
-          suites: ['Vermelha']
-        });
+    this.pesquisarReservas();
   }
 
-  abrirExcluirReserva(id: number): void {
+  public pesquisarReservas() {
+
+    this.loadingService.show();
+    this.reservaservice.consultarReservasPorData(
+      this.dataPesquisa
+    ).subscribe((result) => {
+      this.reservas = result;
+    })
+    .add(() => {
+      this.loadingService.hide();
+    });
+  }
+
+  abrirExcluirReserva(id: string | undefined): void {
+    if (!id)
+      return;
+
     const ref = this.matDialog.open(ExcluirReservaDialogComponent, {
       data: id
     });
@@ -83,23 +72,39 @@ export class ReservasComponent implements OnInit {
     ref.afterClosed().subscribe((deveExcluir)=>{
       if (deveExcluir)
       {
-        let index = this.reservas.findIndex(c => c.id == id);
-        this.reservas.splice(index,1);
+        this.loadingService.show();
+
+        this.reservaservice.excluirReserva(id)
+          .subscribe({
+            next: () => {
+              let index = this.reservas.findIndex(c => c.id == id);
+              this.reservas.splice(index,1);
+            }
+          })
+        .add(()=>{
+          this.loadingService.hide();
+        });
       }
     });
   }
 
-  editarReserva(id: number) : void {
+  editarReserva(id: string | undefined) : void {
+    if (!id)
+      this.router.navigate(['reservas']);
     this.router.navigate([`reservas/editar/${id}`]);
   }
 
-  corChipDoChale(suite: string): string {
-    switch(suite){
-      case 'Amarela': return 'warning';
-      case 'Azul': return 'primary';
-      case 'Verde': return 'success';
-      case 'Vermelha': return 'danger';
-      case 'Chalé': return 'dark';
+  getDescricaoChipChale(suiteId: number) : string {
+    return SuitesMap.find(c => c.key == suiteId)?.value || '';
+  }
+
+  corChipDoChale(suiteId: number): string {
+    switch(suiteId){
+      case 1: return 'warning';
+      case 2: return 'primary';
+      case 3: return 'success';
+      case 4: return 'danger';
+      case 5: return 'dark';
     }
     return '';
   }

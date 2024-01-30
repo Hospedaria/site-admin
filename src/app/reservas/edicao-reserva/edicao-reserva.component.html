@@ -1,4 +1,6 @@
-<h1>Edição de reservas</h1>
+<app-alert [mensagensAlerta]="mensagensAlerta"></app-alert>
+
+<h1 class="mt-4 mb-4 fw-bold fs-1">Edição de reservas</h1>
 
 <div class="row d-flex">
   <div class="col-12">
@@ -201,7 +203,7 @@
                     [(ngModel)]="reserva.status">
 
                     @for (item of statusReservaMap; track item) {
-                      <mat-option value="{{item.key}}">{{item.value}}</mat-option>
+                      <mat-option [value]="item.key">{{item.value}}</mat-option>
                     }
                   </mat-select>
 
@@ -236,7 +238,7 @@
                 <p>Suites:</p>
                 <section>
                   @for (suite of suitesMap; track suite) {
-                    <mat-checkbox [checked]="suiteEstaSelecionada(suite.value)" (change)="onSelecionarSuite($event, suite.value)" >{{suite.value}}</mat-checkbox>
+                    <mat-checkbox [checked]="suiteEstaSelecionada(suite.key)" (change)="onSelecionarSuite($event, suite.key)" >{{suite.value}}</mat-checkbox>
                   }
                   </section>
                   @if (reserva.suites.length == 0 &&
@@ -248,7 +250,7 @@
               </div>
           </div>
 
-          <button class="w-100" mat-raised-button color="primary" type="button">Editar</button>
+          <button (click)="onEditarSuite()" class="w-100" mat-raised-button color="primary" type="button">Editar</button>
       </form>
   </div>
 </div>
