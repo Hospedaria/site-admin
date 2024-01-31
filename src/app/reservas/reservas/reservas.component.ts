@@ -117,9 +117,9 @@ export class ReservasComponent implements OnInit {
   corChipDoChale(suiteId: number): string {
     switch(suiteId){
       case 1: return 'warning';
-      case 2: return 'primary';
-      case 3: return 'success';
-      case 4: return 'danger';
+      case 2: return 'danger';
+      case 3: return 'primary';
+      case 4: return 'success';
       case 5: return 'dark';
     }
     return '';
