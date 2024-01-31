@@ -170,6 +170,14 @@ export class EdicaoReservaComponent implements OnInit {
     }
     else{
       this.formCadastro.markAsDirty();
+      this.mensagensAlerta = {
+        erro: true,
+        mensagens: ['Existem erros de preenchimento no formulário']
+      };
+      window.scroll({
+        top:0,
+        behavior: 'smooth'
+      });
     }
   }
 

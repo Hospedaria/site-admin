@@ -158,6 +158,14 @@ export class CadastroReservasComponent implements OnInit {
     }
     else {
       this.formCadastro.markAllAsTouched();
+      this.mensagensAlerta = {
+        erro: true,
+        mensagens: ['Existem erros de preenchimento no formulário']
+      };
+      window.scroll({
+        top:0,
+        behavior: 'smooth'
+      });
     }
   }
 }
