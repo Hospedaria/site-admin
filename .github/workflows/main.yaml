@@ -1,4 +1,4 @@
-name: Deploy Site on S3 - Development
+name: Deploy Site on S3 - Production
 on:
   push:
     branches: [main]
@@ -40,7 +40,7 @@ jobs:
 
       - name: Deploy Template
         run: |
-          aws cloudformation deploy --template-file deploy.yaml --stack-name prod-claudinei-admin-site --capabilities CAPABILITY_NAMED_IAM --parameter-overrides  file://infra/dev.parameters.json
+          aws cloudformation deploy --template-file deploy.yaml --stack-name prod-claudinei-admin-site --capabilities CAPABILITY_NAMED_IAM --parameter-overrides  file://infra/prod.parameters.json
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -76,7 +76,7 @@ jobs:
 
       - name: Buscando ID da distribuição do cloudfront
         run: |
-          DISTRIBUTION_DESCRIPTION="Cloudfront para site da hospedaria - admin - dev"
+          DISTRIBUTION_DESCRIPTION="Cloudfront para site da hospedaria - admin - prod"
           DISTRIBUTION_ID=$(aws cloudfront list-distributions --query "DistributionList.Items[?Comment=='$DISTRIBUTION_DESCRIPTION'].Id" --output text)
           echo "::set-output name=distribution-id::$DISTRIBUTION_ID"
           echo "DISTRIBUTION_ID_DIST=$DISTRIBUTION_ID" >> $GITHUB_ENV
