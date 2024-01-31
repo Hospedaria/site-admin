@@ -1,0 +1,24 @@
+@if (mensagensAlerta.mensagens.length > 0){
+<div id="alert-cp" class="mt-3 w-100 alert" [ngClass]="mensagensAlerta.erro ? 'alert-danger' : 'alert-success'">
+  <div class="d-flex justify-content-between align-items-center">
+    <div>
+
+  @if (mensagensAlerta.mensagens.length > 1) {
+    <ul class="mb-0">
+    @for (mensagem of mensagensAlerta.mensagens; track mensagem) {
+      <li>{{mensagem}}</li>
+    }
+    </ul>
+  }
+  @else {
+    <span>{{mensagensAlerta.mensagens[0]}}</span>
+  }
+    </div>
+    <div>
+      <button onclick="document.getElementById('alert-cp').remove()" mat-icon-button aria-label="Icone de X para fechar alert">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>
+}
