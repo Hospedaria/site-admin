@@ -2,11 +2,21 @@
 <div>
     <div class="row d-flex justify-content-between align-items-center">
         <div class="mt-2 col-9 col-md-11 form-outline mb-2">
-          <mat-form-field class="w-100" appearance="outline">
-            <mat-label>Filtre as reservas pela data do check-in:</mat-label>
-            <input matInput [(ngModel)]="dataPesquisa" [matDatepicker]="picker">
+          <mat-form-field class="w-100">
+            <mat-label>Selecione o período</mat-label>
+            <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+              <input matStartDate formControlName="start" placeholder="Data de início">
+              <input matEndDate formControlName="end" placeholder="Data de término">
+            </mat-date-range-input>
             <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+
+            @if (range.controls.start.hasError('matStartDateInvalid')) {
+              <mat-error>Data de início inválida</mat-error>
+            }
+            @if (range.controls.end.hasError('matEndDateInvalid')) {
+              <mat-error>Data de término inválida</mat-error>
+            }
           </mat-form-field>
         </div>
         <div class="col-3 pb-4 col-md-1 text-center">

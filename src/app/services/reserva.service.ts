@@ -22,9 +22,17 @@ export class ReservaService {
     });
   }
 
-  consultarReservasPorData(data: Date) : Observable<IReserva[]> {
-    const datestring: string = format(data, 'yyyy-MM-dd');
-    const url = `${this.baseUrl}/reservas/consultaPorData/${datestring}`;
+  consultarReservasAPartirDeHoje(): Observable<IReserva[]> {
+    const url = `${this.baseUrl}/reservas/apartirdehoje`;
+    return this.http.get<IReserva[]>(url);
+  }
+
+  consultarReservasPorPeriodo(dataInicial: Date,
+    dataFinal: Date) : Observable<IReserva[]> {
+    const datestring: string = format(dataInicial, 'yyyy-MM-dd');
+    const dateFinalString: string = format(dataFinal, 'yyyy-MM-dd');
+
+    const url = `${this.baseUrl}/reservas/consultaPorPeriodo?datainicio=${datestring}&datatermino=${dateFinalString}`;
     return this.http.get<IReserva[]>(url);
   }
 

@@ -18,6 +18,7 @@ import { SuitesMap } from '../../../models/enums/Suites';
 import { ReservaService } from '../../services/reserva.service';
 import { LoadingService } from '../../services/loading.service';
 import { StatusReservaMap } from '../../../models/enums/StatusReserva';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-reservas',
@@ -28,7 +29,10 @@ import { StatusReservaMap } from '../../../models/enums/StatusReserva';
 export class ReservasComponent implements OnInit {
 
   public reservas: IReserva[] = [];
-  dataPesquisa: Date = new Date();
+  range = new FormGroup({
+    start: new FormControl<Date>(new Date()),
+    end: new FormControl<Date>(new Date()),
+  });
 
   constructor(private datePipe: DatePipe,
     private currencyPipe: CurrencyPipe,
@@ -46,14 +50,21 @@ export class ReservasComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.pesquisarReservas();
+    this.loadingService.show();
+    this.reservaservice
+      .consultarReservasAPartirDeHoje()
+      .subscribe({
+        next: (r) => this.reservas = r,
+      })
+      .add(()=> this.loadingService.hide());
   }
 
   public pesquisarReservas() {
 
     this.loadingService.show();
-    this.reservaservice.consultarReservasPorData(
-      this.dataPesquisa
+    this.reservaservice.consultarReservasPorPeriodo(
+      this.range.get('start')?.value as Date,
+      this.range.get('end')?.value as Date
     ).subscribe((result) => {
       this.reservas = result;
     })
