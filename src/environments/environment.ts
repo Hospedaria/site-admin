@@ -1,4 +1,4 @@
 export const environment = {
-  production: false,
-  urlBaseApi: 'https://nofgfd4na6.execute-api.sa-east-1.amazonaws.com'
+  production: true,
+  urlBaseApi: 'https://mqy1cj3dw9.execute-api.sa-east-1.amazonaws.com'
 }
