@@ -56,7 +56,7 @@ export class CadastroReservasComponent implements OnInit {
         Validators.required, Validators.maxLength(200), Validators.minLength(2)
       ]),
       'email': new FormControl(this.reserva.nome, [
-        Validators.required, Validators.maxLength(200), Validators.email
+        Validators.maxLength(200), Validators.email
       ]),
       'telefone': new FormControl(this.reserva.telefone, [
         Validators.required
