@@ -1,0 +1,20 @@
+@if(estaRegistrandoPagamento){
+  <app-pagamentos-reserva-adicionar
+    (estaCadastrando)="trocaEstaRegistrando($event)">
+  </app-pagamentos-reserva-adicionar>
+}@else {
+<div class="col-12 mt-4">
+  <h2 class="fw-bold fs-2">Financeiro</h2>
+  <hr />
+  <app-lista-pagamentos-reserva
+    [pagamentos]="pagamentos"
+  ></app-lista-pagamentos-reserva>
+  <button
+    (click)="onAdicionarPagamento()"
+    class="w-100 bg-success text-white"
+    mat-raised-button
+  >
+    + Pagamento
+  </button>
+</div>
+}

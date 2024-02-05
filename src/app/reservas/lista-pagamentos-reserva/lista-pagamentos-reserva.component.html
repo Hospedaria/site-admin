@@ -1,0 +1,20 @@
+<ul class="list-group">
+  @for (pagamento of pagamentos; track pagamento) {
+    <li class="list-group-item mb-2">
+      <div class="w-100 d-flex justify-content-between align-items-center">
+        <div class="d-flex flex-column">
+          <div class="d-flex align-items-center mb-2">
+            <mat-icon>calendar_today</mat-icon>
+            &nbsp;
+            {{pagamento.data | date: 'dd MMM y'}}
+          </div>
+          <p>{{pagamento.valor| currency: 'BRL'}} - {{pagamento.descricao}}</p>
+        </div>
+        <button (click)="abrirDialogExcluirReserva(pagamento.idReserva)" mat-icon-button><mat-icon>delete_outline</mat-icon></button>
+      </div>
+    </li>
+  } @empty {
+    <p class="mb-3">Não há pagamentos registrados</p>
+  }
+
+</ul>

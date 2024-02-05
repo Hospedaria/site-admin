@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-import { MatCardModule } from '@angular/material/card';
-import { MatIcon } from '@angular/material/icon';
-import {MatChipsModule} from '@angular/material/chips';
 import {
   MatDialog
 } from '@angular/material/dialog';
@@ -11,8 +8,6 @@ import {
 import { IReserva } from '../../../models/interfaces/IReserva';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import {MatMenuModule} from '@angular/material/menu';
 import { ExcluirReservaDialogComponent } from '../excluir-reserva-dialog/excluir-reserva-dialog.component';
 import { SuitesMap } from '../../../models/enums/Suites';
 import { ReservaService } from '../../services/reserva.service';
