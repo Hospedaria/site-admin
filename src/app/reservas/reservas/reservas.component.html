@@ -30,7 +30,7 @@
     @for(reservaGrid of reservas; track reservaGrid){
       <p class="w-100 fw-bold fs-4 mt-4 mb-4">{{reservaGrid.data | date: 'dd/MM/yyyy'}}</p>
       @for (reserva of reservaGrid.reservas; track reserva) {
-        <mat-card  class="col-12 col-md-5 col-lg-4 mb-3">
+        <mat-card  class="col-12 col-md-5 col-lg-4 mb-4 mt-4">
             <mat-card-header>
               <mat-card-title>
                   <mat-chip-listbox>
