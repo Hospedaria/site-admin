@@ -125,6 +125,7 @@ export class ReservasComponent implements OnInit {
       case 3: return 'primary';
       case 4: return 'success';
       case 5: return 'dark';
+      case 6: return 'pink';
     }
     return '';
   }
