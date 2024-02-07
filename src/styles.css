@@ -15,3 +15,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .spacer {
   flex: 1 1 auto;
 }
+
+.bg-pink {
+  background-color: pink !important;
+  color: white !important;
+}
