@@ -14,6 +14,7 @@ import { ReservaService } from '../../services/reserva.service';
 import { LoadingService } from '../../services/loading.service';
 import { StatusReservaMap } from '../../../models/enums/StatusReserva';
 import { FormControl, FormGroup } from '@angular/forms';
+import { IReservaGrid } from '../../../models/interfaces/IReservaGrid';
 
 @Component({
   selector: 'app-reservas',
@@ -23,11 +24,12 @@ import { FormControl, FormGroup } from '@angular/forms';
 })
 export class ReservasComponent implements OnInit {
 
-  public reservas: IReserva[] = [];
+  reservas: IReservaGrid[] = [];
   range = new FormGroup({
     start: new FormControl<Date>(new Date()),
     end: new FormControl<Date>(new Date()),
   });
+  separadorDatas: Date[] = [];
 
   constructor(private datePipe: DatePipe,
     private currencyPipe: CurrencyPipe,
@@ -45,13 +47,21 @@ export class ReservasComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.consultarDesdeInicio();
+  }
+
+  private consultarDesdeInicio() {
     this.loadingService.show();
     this.reservaservice
       .consultarReservasAPartirDeHoje()
       .subscribe({
-        next: (r) => this.reservas = r,
+        next: (r) => {
+          this.reservas = r;
+        },
       })
-      .add(()=> this.loadingService.hide());
+      .add(() => {
+        this.loadingService.hide();
+      });
   }
 
   public pesquisarReservas() {
@@ -84,8 +94,7 @@ export class ReservasComponent implements OnInit {
         this.reservaservice.excluirReserva(id)
           .subscribe({
             next: () => {
-              let index = this.reservas.findIndex(c => c.id == id);
-              this.reservas.splice(index,1);
+              this.consultarDesdeInicio();
             }
           })
         .add(()=>{
@@ -116,6 +125,7 @@ export class ReservasComponent implements OnInit {
       case 3: return 'primary';
       case 4: return 'success';
       case 5: return 'dark';
+      case 6: return 'pink';
     }
     return '';
   }

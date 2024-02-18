@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { IReserva } from '../../models/interfaces/IReserva';
 import { environment } from '../../environments/environment';
 import { format } from 'date-fns';
+import { IReservaGrid } from '../../models/interfaces/IReservaGrid';
 
 @Injectable({
   providedIn: 'root'
@@ -22,18 +23,18 @@ export class ReservaService {
     });
   }
 
-  consultarReservasAPartirDeHoje(): Observable<IReserva[]> {
+  consultarReservasAPartirDeHoje(): Observable<IReservaGrid[]> {
     const url = `${this.baseUrl}/reservas/apartirdehoje`;
-    return this.http.get<IReserva[]>(url);
+    return this.http.get<IReservaGrid[]>(url);
   }
 
   consultarReservasPorPeriodo(dataInicial: Date,
-    dataFinal: Date) : Observable<IReserva[]> {
+    dataFinal: Date) : Observable<IReservaGrid[]> {
     const datestring: string = format(dataInicial, 'yyyy-MM-dd');
     const dateFinalString: string = format(dataFinal, 'yyyy-MM-dd');
 
     const url = `${this.baseUrl}/reservas/consultaPorPeriodo?datainicio=${datestring}&datatermino=${dateFinalString}`;
-    return this.http.get<IReserva[]>(url);
+    return this.http.get<IReservaGrid[]>(url);
   }
 
   obterReserva(id: string): Observable<IReserva> {

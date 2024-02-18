@@ -5,7 +5,8 @@ export enum Suite {
   Vermelha = 2,
   Azul = 3,
   Verde = 4,
-  Chale = 5
+  Chale = 5,
+  Rosa = 6
 }
 
 export const SuitesMap: KeyValue<number, string>[] = [
@@ -14,4 +15,5 @@ export const SuitesMap: KeyValue<number, string>[] = [
   { key: Suite.Azul, value: 'Azul'},
   { key: Suite.Verde, value: 'Verde'},
   { key: Suite.Chale, value: 'Chalé'},
+  { key: Suite.Rosa, value: 'Rosa'}
 ];
