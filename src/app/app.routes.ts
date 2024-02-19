@@ -9,5 +9,4 @@ export const routes: Routes = [
     { path: 'reservas', component: ReservasComponent},
     { path: 'reservas/cadastro', component: CadastroReservasComponent },
     { path: 'reservas/editar/:id', component: EdicaoReservaComponent }
-
 ];
