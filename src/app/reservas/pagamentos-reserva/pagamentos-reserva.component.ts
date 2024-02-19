@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { IPagamento } from '../../../models/interfaces/IPagamento';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
@@ -15,7 +15,12 @@ export class PagamentosReservaComponent implements OnInit {
   estaRegistrandoPagamento: boolean = false;
 
   idReserva: string = '';
-  pagamentos: IPagamento[] = []
+
+  @Input()
+  totalReserva: number = 0;
+
+  @Input()
+  pagamentos?: IPagamento[] = []
 
   ngOnInit(): void {
     this.idReserva = this.activatedRoute.snapshot.params["id"];
@@ -27,5 +32,15 @@ export class PagamentosReservaComponent implements OnInit {
 
   trocaEstaRegistrando(value: boolean) {
     this.estaRegistrandoPagamento = value;
+  }
+
+  getTotalPagamentos() : number{
+    return this.pagamentos?
+      this.pagamentos.reduce((sum,pag)=> sum + pag.valor,0)
+      : 0;
+  }
+
+  getFaltaPagar(){
+    return this.totalReserva - this.getTotalPagamentos();
   }
 }

@@ -1,6 +1,6 @@
 @if(estaRegistrandoPagamento){
-  <app-pagamentos-reserva-adicionar
-    (estaCadastrando)="trocaEstaRegistrando($event)">
+  <app-pagamentos-reserva-adicionar>
+    (estaCadastrando)="trocaEstaRegistrando($event)"
   </app-pagamentos-reserva-adicionar>
 }@else {
 <div class="col-12 mt-4">
@@ -9,6 +9,10 @@
   <app-lista-pagamentos-reserva
     [pagamentos]="pagamentos"
   ></app-lista-pagamentos-reserva>
+  @if (pagamentos) {
+    <p><b>Total:</b> {{ totalReserva | currency: 'BRL'}}</p>
+    <p><b>Falta pagar:</b> {{getFaltaPagar() | currency: 'BRL'}}</p>
+  }
   <button
     (click)="onAdicionarPagamento()"
     class="w-100 bg-success text-white"

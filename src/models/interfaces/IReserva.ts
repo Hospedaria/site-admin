@@ -1,3 +1,5 @@
+import { IPagamento } from "./IPagamento";
+
 export interface IReserva {
     id?: string;
     email: string;
@@ -12,4 +14,5 @@ export interface IReserva {
     chegada: string;
     suites: number[];
     observacoes?: string | null;
+    pagamentos?: IPagamento[];
 }

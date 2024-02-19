@@ -10,11 +10,10 @@
           </div>
           <p>{{pagamento.valor| currency: 'BRL'}} - {{pagamento.descricao}}</p>
         </div>
-        <button (click)="abrirDialogExcluirReserva(pagamento.idReserva)" mat-icon-button><mat-icon>delete_outline</mat-icon></button>
+        <button (click)="abrirDialogExcluirReserva(pagamento.idPagamento)" mat-icon-button><mat-icon>delete_outline</mat-icon></button>
       </div>
     </li>
   } @empty {
     <p class="mb-3">Não há pagamentos registrados</p>
   }
-
 </ul>

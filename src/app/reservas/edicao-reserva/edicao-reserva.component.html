@@ -250,5 +250,5 @@
           <button (click)="onEditarSuite()" class="w-100" mat-raised-button color="primary" type="button">Editar</button>
       </form>
   </div>
-  <app-pagamentos-reserva></app-pagamentos-reserva>
+  <app-pagamentos-reserva [totalReserva]="reserva.valor" [pagamentos]="reserva.pagamentos"></app-pagamentos-reserva>
 </div>

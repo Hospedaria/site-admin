@@ -1,6 +1,9 @@
-import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, Output, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IPagamento } from '../../../models/interfaces/IPagamento';
+import { LoadingService } from '../../services/loading.service';
+import { PagamentosService } from '../../services/pagamentos.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-pagamentos-reserva-adicionar',
@@ -8,8 +11,16 @@ import { IPagamento } from '../../../models/interfaces/IPagamento';
   styleUrl: './pagamentos-reserva-adicionar.component.css'
 })
 export class PagamentosReservaAdicionarComponent implements OnInit {
+  loadingService: LoadingService = inject(LoadingService);
+  pagamentoService: PagamentosService = inject(PagamentosService);
+  activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+  router: Router = inject(Router);
+
+  idReserva: string = '';
+
   @Output()
   estaCadastrando = new EventEmitter<boolean>();
+
 
   formBuilder: FormBuilder = inject(FormBuilder);
 
@@ -35,7 +46,21 @@ export class PagamentosReservaAdicionarComponent implements OnInit {
 
   onAdicionar(): void {
     if(this.form.valid){
-      this.estaCadastrando.emit(false);
+      this.loadingService.show();
+      this.pagamento.idReserva = this.idReserva;
+      this.pagamentoService.criarPagamento(this.pagamento)
+        .subscribe({
+          next:() => {
+            this.estaCadastrando.emit(false);
+            this.router.navigate([`reservas/editar/${this.idReserva}`], {
+              queryParams: {
+                mensagem: 'Pagamento adicionado com sucesso'
+              }
+            });
+            window.location.reload();
+          }
+        })
+        .add(()=> this.loadingService.hide());
     }
     else {
       this.form.markAllAsTouched();
@@ -44,5 +69,6 @@ export class PagamentosReservaAdicionarComponent implements OnInit {
 
   ngOnInit(): void {
     this.estaCadastrando.emit(true);
+    this.idReserva = this.activatedRoute.snapshot.params["id"];
   }
 }
