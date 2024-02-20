@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { ExportarReservasService } from './../../services/exportar-reservas.service';
+import { Component, OnInit, inject } from '@angular/core';
 
 import {
   MatDialog
@@ -23,6 +24,8 @@ import { IReservaGrid } from '../../../models/interfaces/IReservaGrid';
   providers: [DatePipe, CurrencyPipe]
 })
 export class ReservasComponent implements OnInit {
+
+  exportarReservasService = inject(ExportarReservasService);
 
   reservas: IReservaGrid[] = [];
   range = new FormGroup({
@@ -128,5 +131,18 @@ export class ReservasComponent implements OnInit {
       case 6: return 'pink';
     }
     return '';
+  }
+
+  exportarReservas(data: Date){
+    this.loadingService.show();
+    this.exportarReservasService.exportarReservas(data)
+      .subscribe({
+        next:(mensagem: string)=>{
+          mensagem = mensagem.replaceAll('\n','%0A');
+          const url = `https://api.whatsapp.com/send?phone=5511998161253&text=${mensagem}`;
+          window.open(url, '_blank');
+        }
+      })
+    .add(()=> this.loadingService.hide());
   }
 }
