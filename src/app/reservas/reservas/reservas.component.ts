@@ -139,7 +139,7 @@ export class ReservasComponent implements OnInit {
       .subscribe({
         next:(mensagem: string)=>{
           mensagem = mensagem.replaceAll('\n','%0A');
-          const url = `https://api.whatsapp.com/send?phone=5511998161253&text=${mensagem}`;
+          const url = `https://wa.me/5511998161253?text=${mensagem}`;
           window.open(url, '_blank');
         }
       })
