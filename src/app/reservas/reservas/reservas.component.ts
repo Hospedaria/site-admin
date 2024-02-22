@@ -39,9 +39,9 @@ export class ReservasComponent implements OnInit {
     private router: Router,
     public matDialog: MatDialog,
     private reservaservice: ReservaService,
-    private loadingService: LoadingService){}
+    private loadingService: LoadingService) { }
 
-  public buscaValorReservaFormatoTela(valor: number) : string | null{
+  public buscaValorReservaFormatoTela(valor: number): string | null {
     return this.currencyPipe.transform(valor, 'BRL');
   }
 
@@ -76,9 +76,9 @@ export class ReservasComponent implements OnInit {
     ).subscribe((result) => {
       this.reservas = result;
     })
-    .add(() => {
-      this.loadingService.hide();
-    });
+      .add(() => {
+        this.loadingService.hide();
+      });
   }
 
   abrirExcluirReserva(id: string | undefined): void {
@@ -89,9 +89,8 @@ export class ReservasComponent implements OnInit {
       data: id
     });
 
-    ref.afterClosed().subscribe((deveExcluir)=>{
-      if (deveExcluir)
-      {
+    ref.afterClosed().subscribe((deveExcluir) => {
+      if (deveExcluir) {
         this.loadingService.show();
 
         this.reservaservice.excluirReserva(id)
@@ -100,29 +99,29 @@ export class ReservasComponent implements OnInit {
               this.consultarDesdeInicio();
             }
           })
-        .add(()=>{
-          this.loadingService.hide();
-        });
+          .add(() => {
+            this.loadingService.hide();
+          });
       }
     });
   }
 
-  editarReserva(id: string | undefined) : void {
+  editarReserva(id: string | undefined): void {
     if (!id)
       this.router.navigate(['reservas']);
     this.router.navigate([`reservas/editar/${id}`]);
   }
 
-  getDescricaoStatus(status: number) : string {
+  getDescricaoStatus(status: number): string {
     return StatusReservaMap.find(c => c.key == status)?.value || '';
   }
 
-  getDescricaoChipChale(suiteId: number) : string {
+  getDescricaoChipChale(suiteId: number): string {
     return SuitesMap.find(c => c.key == suiteId)?.value || '';
   }
 
   corChipDoChale(suiteId: number): string {
-    switch(suiteId){
+    switch (suiteId) {
       case 1: return 'warning';
       case 2: return 'danger';
       case 3: return 'primary';
@@ -133,16 +132,16 @@ export class ReservasComponent implements OnInit {
     return '';
   }
 
-  exportarReservas(data: Date){
+  exportarReservas(data: Date) {
     this.loadingService.show();
     this.exportarReservasService.exportarReservas(data)
       .subscribe({
-        next:(mensagem: string)=>{
-          mensagem = mensagem.replaceAll('\n','%0A');
-          const url = `https://wa.me/5511998161253?text=${mensagem}`;
-          window.open(url, '_blank');
+        next: (mensagem: string) => {
+
+          var url = 'https://api.whatsapp.com/send'
+          window.open(url + '?phone=5511998161253&text=' + encodeURIComponent(mensagem), '_blank');
         }
       })
-    .add(()=> this.loadingService.hide());
+      .add(() => this.loadingService.hide());
   }
 }
