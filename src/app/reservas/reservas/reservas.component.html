@@ -30,8 +30,7 @@
     @for(reservaGrid of reservas; track reservaGrid){
       <div class="w-100 d-flex align-items-center justify-content-start">
         <p class="fw-bold fs-4 mt-4 mb-4">{{reservaGrid.data | date: 'dd/MM/yyyy'}}</p>
-        &nbsp;&nbsp; <button  mat-mini-fab color="basic"><mat-icon>share</mat-icon></button>
-        <a [href]="getTextoExportarReservas(reservaGrid)">ok</a>
+        &nbsp;&nbsp; <a [href]="getTextoExportarReservas(reservaGrid)" mat-mini-fab color="basic"><mat-icon>share</mat-icon></a>
       </div>
       @for (reserva of reservaGrid.reservas; track reserva) {
         <mat-card  class="col-12 col-md-5 col-lg-4 mb-4 mt-2">
