@@ -1,3 +1,4 @@
+import { IReservaGrid } from './../../../models/interfaces/IReservaGrid';
 import { ExportarReservasService } from './../../services/exportar-reservas.service';
 import { Component, OnInit, inject } from '@angular/core';
 
@@ -15,7 +16,6 @@ import { ReservaService } from '../../services/reserva.service';
 import { LoadingService } from '../../services/loading.service';
 import { StatusReservaMap } from '../../../models/enums/StatusReserva';
 import { FormControl, FormGroup } from '@angular/forms';
-import { IReservaGrid } from '../../../models/interfaces/IReservaGrid';
 
 @Component({
   selector: 'app-reservas',
@@ -39,9 +39,9 @@ export class ReservasComponent implements OnInit {
     private router: Router,
     public matDialog: MatDialog,
     private reservaservice: ReservaService,
-    private loadingService: LoadingService) { }
+    private loadingService: LoadingService){}
 
-  public buscaValorReservaFormatoTela(valor: number): string | null {
+  public buscaValorReservaFormatoTela(valor: number) : string | null{
     return this.currencyPipe.transform(valor, 'BRL');
   }
 
@@ -76,9 +76,9 @@ export class ReservasComponent implements OnInit {
     ).subscribe((result) => {
       this.reservas = result;
     })
-      .add(() => {
-        this.loadingService.hide();
-      });
+    .add(() => {
+      this.loadingService.hide();
+    });
   }
 
   abrirExcluirReserva(id: string | undefined): void {
@@ -89,8 +89,9 @@ export class ReservasComponent implements OnInit {
       data: id
     });
 
-    ref.afterClosed().subscribe((deveExcluir) => {
-      if (deveExcluir) {
+    ref.afterClosed().subscribe((deveExcluir)=>{
+      if (deveExcluir)
+      {
         this.loadingService.show();
 
         this.reservaservice.excluirReserva(id)
@@ -99,29 +100,29 @@ export class ReservasComponent implements OnInit {
               this.consultarDesdeInicio();
             }
           })
-          .add(() => {
-            this.loadingService.hide();
-          });
+        .add(()=>{
+          this.loadingService.hide();
+        });
       }
     });
   }
 
-  editarReserva(id: string | undefined): void {
+  editarReserva(id: string | undefined) : void {
     if (!id)
       this.router.navigate(['reservas']);
     this.router.navigate([`reservas/editar/${id}`]);
   }
 
-  getDescricaoStatus(status: number): string {
+  getDescricaoStatus(status: number) : string {
     return StatusReservaMap.find(c => c.key == status)?.value || '';
   }
 
-  getDescricaoChipChale(suiteId: number): string {
+  getDescricaoChipChale(suiteId: number) : string {
     return SuitesMap.find(c => c.key == suiteId)?.value || '';
   }
 
   corChipDoChale(suiteId: number): string {
-    switch (suiteId) {
+    switch(suiteId){
       case 1: return 'warning';
       case 2: return 'danger';
       case 3: return 'primary';
@@ -132,16 +133,17 @@ export class ReservasComponent implements OnInit {
     return '';
   }
 
-  exportarReservas(data: Date) {
-    this.loadingService.show();
-    this.exportarReservasService.exportarReservas(data)
-      .subscribe({
-        next: (mensagem: string) => {
+  getTextoExportarReservas(reservaGrid: IReservaGrid): string{
+    // this.loadingService.show();
+    // this.exportarReservasService.exportarReservas(data)
+    //   .subscribe({
+    //     next:(mensagem: string)=>{
+    //       var url='https://api.whatsapp.com/send'
+    //       window.open(url + '?phone=5511998161253&text='+ encodeURIComponent(mensagem));
+    //     }
+    //   })
+    // .add(()=> this.loadingService.hide());
 
-          var url = 'https://api.whatsapp.com/send'
-          window.open(url + '?phone=5511998161253&text=' + encodeURIComponent(mensagem), '_blank');
-        }
-      })
-      .add(() => this.loadingService.hide());
+    return 'https://api.whatsapp.com/send?phone=5511998161253&text='+encodeURIComponent(reservaGrid.urlExportar);
   }
 }
