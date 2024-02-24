@@ -144,6 +144,6 @@ export class ReservasComponent implements OnInit {
     //   })
     // .add(()=> this.loadingService.hide());
 
-    return 'https://api.whatsapp.com/send?phone=5511998161253&text='+encodeURIComponent(reservaGrid.urlExportar);
+    return 'https://api.whatsapp.com/send?text='+encodeURIComponent(reservaGrid.urlExportar);
   }
 }
