@@ -1,0 +1,80 @@
+<div class="col-12 mt-4">
+  <h2 class="fw-bold fs-2">Adicionar pagamento</h2>
+  <hr />
+  <form [formGroup]="form">
+    <div class="col-12 form-outline">
+      <mat-form-field class="w-100" appearance="outline">
+        <mat-label>Descrição</mat-label>
+        <input
+          required
+          matInput
+          type="text"
+          formControlName="descricao"
+          [(ngModel)]="pagamento.descricao"
+          >
+
+        @if (form.get('descricao')?.errors?.['required']) {
+          <mat-error>
+            Descrição é obrigatória
+          </mat-error>
+        }
+        @else if (form.get('descricao')?.errors?.['maxlength']){
+          <mat-error>
+            Descrição pode ter no máximo 200 caracteres
+          </mat-error>
+        }
+      </mat-form-field>
+    </div>
+    <div class="col-12 form-outline">
+      <div class="row">
+        <div class="col-6">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Valor</mat-label>
+            <input
+              required
+              matInput
+              type="number"
+              min="0"
+              placeholder="0"
+              formControlName="valor"
+              [(ngModel)]="pagamento.valor"
+            />
+
+            @if (form.get('valor')?.errors?.['required']) {
+            <mat-error> Valor é obrigatório </mat-error>
+            } @else if (form.get('valor')?.errors?.['min']){
+            <mat-error> Valor deve ser no mínimo R$ 0,01 </mat-error>
+            }
+          </mat-form-field>
+        </div>
+        <div class="col-6">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Data</mat-label>
+            <input
+              matInput
+              [(ngModel)]="pagamento.data"
+              formControlName="data"
+              [matDatepicker]="picker"
+            />
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+
+            @if (form.get('data')?.errors?.['required']) {
+            <mat-error> Data de pagamento é obrigatória </mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </form>
+  <button class="mt-1" (click)="onAdicionar()" color="primary" mat-raised-button>
+    Adicionar
+  </button>
+  &nbsp;
+  <button (click)="onCancelar()" mat-raised-button>
+    Cancelar
+  </button>
+</div>

@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { IReservaGrid } from './../../../models/interfaces/IReservaGrid';
+import { ExportarReservasService } from './../../services/exportar-reservas.service';
+import { Component, OnInit, inject } from '@angular/core';
 
 import {
   MatDialog
@@ -14,7 +16,6 @@ import { ReservaService } from '../../services/reserva.service';
 import { LoadingService } from '../../services/loading.service';
 import { StatusReservaMap } from '../../../models/enums/StatusReserva';
 import { FormControl, FormGroup } from '@angular/forms';
-import { IReservaGrid } from '../../../models/interfaces/IReservaGrid';
 
 @Component({
   selector: 'app-reservas',
@@ -23,6 +24,8 @@ import { IReservaGrid } from '../../../models/interfaces/IReservaGrid';
   providers: [DatePipe, CurrencyPipe]
 })
 export class ReservasComponent implements OnInit {
+
+  exportarReservasService = inject(ExportarReservasService);
 
   reservas: IReservaGrid[] = [];
   range = new FormGroup({
@@ -128,5 +131,19 @@ export class ReservasComponent implements OnInit {
       case 6: return 'pink';
     }
     return '';
+  }
+
+  getTextoExportarReservas(reservaGrid: IReservaGrid): string{
+    // this.loadingService.show();
+    // this.exportarReservasService.exportarReservas(data)
+    //   .subscribe({
+    //     next:(mensagem: string)=>{
+    //       var url='https://api.whatsapp.com/send'
+    //       window.open(url + '?phone=5511998161253&text='+ encodeURIComponent(mensagem));
+    //     }
+    //   })
+    // .add(()=> this.loadingService.hide());
+
+    return 'https://api.whatsapp.com/send?text='+encodeURIComponent(reservaGrid.urlExportar);
   }
 }
