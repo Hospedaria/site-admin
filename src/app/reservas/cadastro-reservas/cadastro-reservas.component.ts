@@ -1,9 +1,9 @@
 import { LoadingService } from './../../services/loading.service';
 import { StatusReservaMap } from './../../../models/enums/StatusReserva';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 
 import { IReserva } from '../../../models/interfaces/IReserva';
 import { KeyValue } from '@angular/common';
@@ -19,7 +19,9 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrl: './cadastro-reservas.component.css',
   providers: [ReservaService]
 })
-export class CadastroReservasComponent implements OnInit {
+export class CadastroReservasComponent implements OnInit, AfterViewInit {
+
+  @ViewChildren(MatCheckbox) checkboxes: QueryList<MatCheckbox> = new QueryList<MatCheckbox>();
 
   statusReservaMap: KeyValue<number, string>[] = StatusReservaMap;
   suitesMap: KeyValue<number, string>[] = SuitesMap;
@@ -32,25 +34,13 @@ export class CadastroReservasComponent implements OnInit {
 
 
   formCadastro: FormGroup = new FormGroup({});
-  reserva: IReserva = {
-      email: '',
-      nome: '',
-      telefone: '',
-      checkin: new Date(),
-      checkout: new Date(),
-      chegada: '',
-      qtdAdultos: 0,
-      qtdCriancas: 0,
-      status: 0,
-      valor: 0,
-      suites: []
-  };
+  reserva: IReserva = this.novoObjetoReserva();
 
   constructor(formBuilder: FormBuilder,
     private reservaService: ReservaService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private loadingService: LoadingService){
+    private loadingService: LoadingService) {
     this.formCadastro = formBuilder.group({
       'nome': new FormControl(this.reserva.nome, [
         Validators.required, Validators.maxLength(200), Validators.minLength(2)
@@ -81,13 +71,16 @@ export class CadastroReservasComponent implements OnInit {
       'suites': new FormControl(this.reserva.suites)
     });
   }
+  ngAfterViewInit(): void {
+    this.checkboxes.forEach(c => c.checked = false);
+  }
 
   ngOnInit(): void {
     this.activatedRoute
       .queryParams
-      .subscribe((params)=> {
+      .subscribe((params) => {
         this.mensagemRetorno = params['mensagem'];
-        if (this.mensagemRetorno){
+        if (this.mensagemRetorno) {
           this.mensagensAlerta = {
             erro: false,
             mensagens: [this.mensagemRetorno]
@@ -96,21 +89,21 @@ export class CadastroReservasComponent implements OnInit {
       });
   }
 
-  onSelecionarSuite(event: MatCheckboxChange, suiteId: number) : void {
+  onSelecionarSuite(event: MatCheckboxChange, suiteId: number): void {
 
     let index = this.reserva.suites.lastIndexOf(suiteId);
     let itemExiste = index > -1;
-    if (event.checked && !itemExiste){
-        this.reserva.suites.push(suiteId);
+    if (event.checked && !itemExiste) {
+      this.reserva.suites.push(suiteId);
     }
-    else if (itemExiste){
-        this.reserva.suites.splice(index, 1);
+    else if (itemExiste) {
+      this.reserva.suites.splice(index, 1);
     }
     this.checkBoxSujo = true;
   }
 
-  onCadastrarReserva(){
-    if (this.formCadastro.valid){
+  onCadastrarReserva() {
+    if (this.formCadastro.valid) {
       this.mensagensAlerta = {
         erro: false,
         mensagens: []
@@ -123,21 +116,25 @@ export class CadastroReservasComponent implements OnInit {
             this.router.navigate(['reservas/cadastro'], {
               queryParams: {
                 mensagem: 'Reserva cadastrada com sucesso'
-              }
+              },
             });
+            this.reserva = this.novoObjetoReserva();
+            this.checkboxes.forEach(c => c.checked = false);
+            this.formCadastro.reset();
+            this.checkBoxSujo = false;
           },
           error: (e: HttpErrorResponse) => {
             let errors = e.error.errors;
             let errorsString: string[] = [];
-            for (const prop in errors){
+            for (const prop in errors) {
               if (errors.hasOwnProperty(prop)) {
                 let arrayConteudo = errors[prop];
-                if (arrayConteudo){
+                if (arrayConteudo) {
                   for (const item of arrayConteudo) {
                     errorsString.push(item);
                   }
                 }
-            }
+              }
             }
 
             this.mensagensAlerta = {
@@ -145,14 +142,14 @@ export class CadastroReservasComponent implements OnInit {
               mensagens: errorsString
             }
           }
-      })
-      .add(() => {
-        window.scroll({
-          top:0,
-          behavior: 'smooth'
+        })
+        .add(() => {
+          window.scroll({
+            top: 0,
+            behavior: 'smooth'
+          });
+          this.loadingService.hide();
         });
-        this.loadingService.hide();
-      });
 
 
     }
@@ -163,9 +160,27 @@ export class CadastroReservasComponent implements OnInit {
         mensagens: ['Existem erros de preenchimento no formulário']
       };
       window.scroll({
-        top:0,
+        top: 0,
         behavior: 'smooth'
       });
     }
   }
+
+  novoObjetoReserva() : IReserva {
+    let reserva: IReserva = {
+      email: '',
+      nome: '',
+      telefone: '',
+      checkin: new Date(),
+      checkout: new Date(),
+      chegada: '',
+      qtdAdultos: 0,
+      qtdCriancas: 0,
+      status: 0,
+      valor: 0,
+      suites: []
+    };
+    return reserva;
+  }
+
 }

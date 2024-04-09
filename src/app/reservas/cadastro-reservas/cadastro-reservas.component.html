@@ -245,7 +245,7 @@
                 <p>Suites:</p>
                 <section>
                   @for (suite of suitesMap; track suite) {
-                    <mat-checkbox (change)="onSelecionarSuite($event, suite.key)" >{{suite.value}}</mat-checkbox>
+                    <mat-checkbox class="ck-suite" (change)="onSelecionarSuite($event, suite.key)" >{{suite.value}}</mat-checkbox>
                   }
                   </section>
                   @if (reserva.suites.length == 0 &&
