@@ -14,7 +14,7 @@ import { ExcluirReservaDialogComponent } from '../excluir-reserva-dialog/excluir
 import { SuitesMap } from '../../../models/enums/Suites';
 import { ReservaService } from '../../services/reserva.service';
 import { LoadingService } from '../../services/loading.service';
-import { StatusReservaMap } from '../../../models/enums/StatusReserva';
+import { StatusReserva, StatusReservaMap } from '../../../models/enums/StatusReserva';
 import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
@@ -119,6 +119,15 @@ export class ReservasComponent implements OnInit {
 
   getDescricaoChipChale(suiteId: number) : string {
     return SuitesMap.find(c => c.key == suiteId)?.value || '';
+  }
+
+  corChipStatus(status: number): string {
+    switch(status){
+      case StatusReserva.PreReservado: return 'warning';
+      case StatusReserva.Cancelado: return 'danger';
+      case StatusReserva.Confirmado: return 'success';
+    }
+    return '';
   }
 
   corChipDoChale(suiteId: number): string {
